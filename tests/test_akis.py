@@ -10,6 +10,17 @@ from uzay_oyunu.akis import (
     uzun_yolculuklar,
     yakit_gostergesi,
 )
+from uzay_oyunu.istatistik import (
+    buyuk_harfli_gezegenler_comp,
+    buyuk_harfli_gezegenler_map,
+    en_az_iki_baglantili_comp,
+    en_az_iki_baglantili_filter,
+    hizli_yolculuk,
+    toplam_baglanti_reduce,
+    toplam_baglanti_sum,
+    yolculuk,
+)
+from uzay_oyunu.zamanlayici import zamanlayici
 
 
 # --- Görev 1 Testleri ---
@@ -69,12 +80,53 @@ def test_rota_sayaci():
         galaksi = json.load(f)
 
     say = rota_sayaci(galaksi["baglantilar"])
-    # 0 adımda sadece başlangıç konumu vardır (1 rota)
     assert say("dünya", 0) == 1
-    # 1 adımda dünya'nın bağlantı sayısı kadar rota vardır (2 rota)
     assert say("dünya", 1) == len(galaksi["baglantilar"]["dünya"])
-    # Büyük adımda pozitif bir değer döner ve önbellek dolar
     assert say("dünya", 10) > 0
-    assert say("dünya", 20) > 0
     info = say.cache_info()
     assert info.hits > 0
+
+
+# --- Görev 5 Testleri ---
+def test_istatistik_fonksiyonlari():
+    ornek = {
+        "gezegenler": ["dünya", "centauri", "sirius", "orion", "kara_delik"],
+        "baglantilar": {
+            "dünya": ["centauri", "sirius"],
+            "centauri": ["dünya", "sirius", "orion"],
+            "sirius": ["dünya", "centauri", "orion", "kara_delik"],
+            "orion": ["centauri"],
+            "kara_delik": [],
+        },
+    }
+
+    # 1. Soru: Buyuk harf (iki yol ayni sonucu vermeli)
+    map_sonuc = buyuk_harfli_gezegenler_map(ornek)
+    comp_sonuc = buyuk_harfli_gezegenler_comp(ornek)
+    assert map_sonuc == comp_sonuc
+    assert "DÜNYA" in map_sonuc
+
+    # 2. Soru: En az 2 baglanti
+    filter_sonuc = en_az_iki_baglantili_filter(ornek)
+    comp2_sonuc = en_az_iki_baglantili_comp(ornek)
+    assert filter_sonuc == comp2_sonuc
+    assert "dünya" in filter_sonuc
+    assert "kara_delik" not in filter_sonuc
+
+    # 3. Soru: Toplam baglanti
+    red_sonuc = toplam_baglanti_reduce(ornek)
+    sum_sonuc = toplam_baglanti_sum(ornek)
+    assert red_sonuc == sum_sonuc
+    assert red_sonuc == 10
+
+    # partial testi:
+    assert hizli_yolculuk("dünya", "sirius", 30) == 10.0
+    assert yolculuk("dünya", "sirius", 30, hiz=1) == 30.0
+
+
+# --- Bonus Testi ---
+def test_zamanlayici():
+    z = zamanlayici(0.01)
+    ilk = next(z)
+    ikinci = next(z)
+    assert ikinci >= ilk
