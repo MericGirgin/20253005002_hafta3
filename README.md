@@ -1,5 +1,4 @@
-# İleri Python Programlama – Hafta 3 Lab Ödevi
-**Fonksiyonlar Derinlemesine**
+# İleri Python Programlama – Lab Ödevleri
 
 - **Öğrenci:** Ahmet Meriç Girgin
 - **Öğrenci Numarası:** 20253005002
@@ -8,32 +7,26 @@
 
 ---
 
-## Görevler ve Yapılan İşler
+## Hafta 4: Üreteçler ve functools
 
-### 1. Görev 1 – Saf Fonksiyonlar Çıkar (20 Puan)
-- `uzay_oyunu/oyun.py` içinde `envanter_metni` ve `hedef_menusu` saf fonksiyonları yazıldı.
-- `print` yapılmadan metin `return` edildi.
-- `tests/test_fonksiyonlar.py` birim testleri hazırlandı.
+### Görev 4: Önbellekli Rota Sayacı Performans Ölçümü (adim = 20)
 
-### 2. Görev 2 – Esnek Parametreler (15 Puan)
-- `uzay_oyunu/kayit.py` içinde `gorev_kaydi(baslik, *adimlar, oncelik="normal", **ekler)` fonksiyonu yazıldı.
-- `oncelik` keyword-only parametre olarak tanımlandı.
-- `main` bloğunda doğrudan çağrı ve `*` ile `**` unpacking çağrıları örneklendirildi.
+`rota_sayisi("dünya", 20)` çağrısı için `@lru_cache` önbellek performans karşılaştırması:
 
-### 3. Görev 3 – Galaksiyi Veri Dosyasından Kur (25 Puan)
-- Oyun haritası `uzay_oyunu/galaksi.json` dosyasına taşındı.
-- `uzay_oyunu/galaksi.py` içinde `galaksi_kur` fonksiyonu yazıldı (başlangıç kontrolü ve `kwargs.get('yakit', 50)`).
-- `travel()` içindeki hedefler dinamik olarak `galaksi["baglantilar"]` üzerinden çekildi.
+- **Önbelleksiz Sürüm Süresi:** `7.318025` saniye
+- **Önbellekli Sürüm Süresi:** `0.000116` saniye (~63.000 kat daha hızlı)
+- **cache_info() Çıktısı:** `CacheInfo(hits=92, misses=98, maxsize=None, currsize=98)`
 
-### 4. Görev 4 – Tuzaklar ve Kapsam (20 Puan)
-- `tests/test_tuzaklar.py` içinde `depo=[]` mutable default argument tuzağını gösteren test ve `None` kalıbıyla düzeltilmiş fonksiyon yazıldı.
-- `kapsam.md` dosyasında LEGB kuralı ve `UnboundLocalError` detaylıca açıklandı.
+---
 
-### 5. Görev 5 – Closure ve Lambda (20 Puan) + Bonus (+10 Puan)
-- `uzay_oyunu/araclar.py` içinde:
-  - `hamle_sayaci()`: `nonlocal` kullanan closure sayaç yazıldı ve `travel()` içine entegre edildi.
-  - `en_bagli_gezegenler(galaksi)`: `sorted()` ve `key=lambda` ile gezegenler bağlantı sayısına ve alfabetik sıraya göre sıralandı.
-  - `sure_olc(fonksiyon)`: Bonus olarak çalışma süresini ölçen decorator yazıldı.
+## Hafta 3: Fonksiyonlar Derinlemesine
+
+### Görevler ve Yapılan İşler
+1. **Görev 1 (Saf Fonksiyonlar):** `envanter_metni` ve `hedef_menusu` saf fonksiyonları yazıldı.
+2. **Görev 2 (Esnek Parametreler):** `gorev_kaydi` fonksiyonunda `*adimlar`, keyword-only `oncelik` ve `**ekler` uygulandı.
+3. **Görev 3 (Galaksi JSON):** Harita `galaksi.json` dosyasına taşındı ve `galaksi_kur` fonksiyonu yazıldı.
+4. **Görev 4 (Tuzaklar ve Kapsam):** `depo=[]` tuzağı test edildi ve `None` kalıbıyla düzeltildi; `kapsam.md` raporu hazırlandı.
+5. **Görev 5 (Closure & Lambda):** `hamle_sayaci` closure'ı, `key=lambda` ile sıralama ve `sure_olc` decorator'ü eklendi.
 
 ---
 

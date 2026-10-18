@@ -1,4 +1,5 @@
 from collections.abc import Generator, Iterable
+from functools import lru_cache
 
 
 def fibonacci() -> Generator[int, None, None]:
@@ -44,3 +45,18 @@ def uzun_yolculuklar(
     for k in kayitlar:
         if k[2] > esik:
             yield k
+
+
+def rota_sayaci(baglantilar: dict[str, list[str]]):
+    """@lru_cache ile onbelleklenmis rota sayisi fonksiyonunu dondurur."""
+
+    @lru_cache(maxsize=None)
+    def rota_sayisi(gezegen: str, adim: int) -> int:
+        if adim == 0:
+            return 1
+        return sum(
+            rota_sayisi(komsu, adim - 1)
+            for komsu in baglantilar.get(gezegen, [])
+        )
+
+    return rota_sayisi

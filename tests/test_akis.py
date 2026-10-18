@@ -1,9 +1,11 @@
+import json
 from itertools import islice, takewhile
 from pathlib import Path
 import pytest
 from uzay_oyunu.akis import (
     ayristir,
     fibonacci,
+    rota_sayaci,
     satirlari_oku,
     uzun_yolculuklar,
     yakit_gostergesi,
@@ -52,11 +54,27 @@ def test_yakit_gostergesi_stop_iteration():
 def test_seyir_defteri_boru_hatti():
     dosya_yolu = str(Path(__file__).parent.parent / "veri" / "seyir.txt")
 
-    # PDF örneği 1: sum(...) == 88
     toplam = sum(y for _, _, y in ayristir(satirlari_oku(dosya_yolu)))
     assert toplam == 88
 
-    # PDF örneği 2: uzun_yolculuklar(kayitlar, 10)
     kayitlar = ayristir(satirlari_oku(dosya_yolu))
     uzunlar = [h for _, h, _ in uzun_yolculuklar(kayitlar, 10)]
     assert uzunlar == ["sirius", "centauri", "orion", "kara_delik"]
+
+
+# --- Görev 4 Testleri ---
+def test_rota_sayaci():
+    json_yolu = Path(__file__).parent.parent / "uzay_oyunu" / "galaksi.json"
+    with open(json_yolu, "r", encoding="utf-8") as f:
+        galaksi = json.load(f)
+
+    say = rota_sayaci(galaksi["baglantilar"])
+    # 0 adımda sadece başlangıç konumu vardır (1 rota)
+    assert say("dünya", 0) == 1
+    # 1 adımda dünya'nın bağlantı sayısı kadar rota vardır (2 rota)
+    assert say("dünya", 1) == len(galaksi["baglantilar"]["dünya"])
+    # Büyük adımda pozitif bir değer döner ve önbellek dolar
+    assert say("dünya", 10) > 0
+    assert say("dünya", 20) > 0
+    info = say.cache_info()
+    assert info.hits > 0
