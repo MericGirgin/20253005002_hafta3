@@ -8,9 +8,11 @@ if proje_kok not in sys.path:
     sys.path.insert(0, proje_kok)
 
 try:
+    from uzay_oyunu.akis import yakit_gostergesi
     from uzay_oyunu.araclar import hamle_sayaci
     from uzay_oyunu.galaksi import galaksi_dosyasini_oku, galaksi_kur
 except ModuleNotFoundError:
+    from akis import yakit_gostergesi
     from araclar import hamle_sayaci
     from galaksi import galaksi_dosyasini_oku, galaksi_kur
 
@@ -46,6 +48,8 @@ def travel(galaksi: Optional[dict[str, Any]] = None) -> int:
 
     sayac = hamle_sayaci()
     toplam_hamle: int = 0
+    tuketim = galaksi.get("tuketim", 5)
+    gosterge = yakit_gostergesi(galaksi["yakit"], tuketim=tuketim)
 
     credits: bool = False
     engines: bool = False
@@ -87,7 +91,12 @@ def travel(galaksi: Optional[dict[str, Any]] = None) -> int:
 
         toplam_hamle = sayac()
         galaksi["konum"] = yeni_hedef
-        galaksi["yakit"] -= 10
+
+        try:
+            galaksi["yakit"] = next(gosterge)
+        except StopIteration:
+            print("Yakıtın bitti, uzayda sürükleniyorsun…")
+            break
 
         if yeni_hedef == "centauri":
             credits = True
@@ -97,7 +106,7 @@ def travel(galaksi: Optional[dict[str, Any]] = None) -> int:
             engines = True
 
     if galaksi["yakit"] <= 0:
-        print("Yakitin bitti! Uzayda kayboldun...")
+        print("Yakıtın bitti, uzayda sürükleniyorsun…")
 
     return toplam_hamle
 
