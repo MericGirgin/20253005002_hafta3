@@ -1,4 +1,4 @@
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 
 
 def fibonacci() -> Generator[int, None, None]:
@@ -17,3 +17,30 @@ def yakit_gostergesi(yakit: int, tuketim: int) -> Generator[int, None, None]:
         yield kalan
         if kalan == 0:
             break
+
+
+def satirlari_oku(yol: str) -> Generator[str, None, None]:
+    """Dosyayi satir satir okur; bos ve '#' ile baslayan satirlari atlar."""
+    with open(yol, "r", encoding="utf-8") as f:
+        for satir in f:
+            temiz = satir.strip()
+            if temiz and not temiz.startswith("#"):
+                yield temiz
+
+
+def ayristir(satirlar: Iterable[str]) -> Generator[tuple[str, str, int], None, None]:
+    """Satirlardan (kaynak, hedef, yakit) demeti uretir."""
+    for satir in satirlar:
+        sol, sag = satir.split("->")
+        kaynak = sol.strip()
+        hedef, yakit_str = sag.strip().split()
+        yield (kaynak, hedef, int(yakit_str))
+
+
+def uzun_yolculuklar(
+    kayitlar: Iterable[tuple[str, str, int]], esik: int
+) -> Generator[tuple[str, str, int], None, None]:
+    """Yakiti esikten buyuk olan kayitlari suzer."""
+    for k in kayitlar:
+        if k[2] > esik:
+            yield k
